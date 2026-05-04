@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>نظام التنبؤ بمرض السكري</title>
+
+    <!-- خط طبي نظيف -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Tajawal', sans-serif;
+            background: #f4f7fb;
+        }
+
+        /* شريط علوي */
+        .header {
+            background: #0d6efd;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .header p {
+            margin-top: 8px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* الحاوية */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 10px;
+        }
+
+        /* الكروت */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        }
+
+        /* الإدخال */
+        label {
+            font-size: 13px;
+            color: #444;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        input:focus {
+            border-color: #0d6efd;
+            outline: none;
+        }
+
+        /* زر */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #084298;
+        }
+
+        /* النتيجة */
+        .result-box {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .low { background: #28a745; }
+        .medium { background: #ffc107; color: black; }
+        .high { background: #dc3545; }
+
+        /* التذييل */
+        .footer {
+            text-align: center;
+            margin: 30px 0 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .footer strong {
+            color: #0d6efd;
+        }
+
+        /* responsive */
+        @media(max-width: 768px){
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- العنوان -->
+<div class="header">
+    <h1>🩺 نظام ذكي للتنبؤ بمرض السكري</h1>
+    <p>يعتمد على تقنيات تعلم الآلة لتحليل البيانات الطبية</p>
+    <p>عمل طلاب المجموعة 3 تحت اشراف د.رائد عودة</p>
+</div>
+
+<!-- المحتوى -->
+<div class="container">
+
+    <!-- النموذج -->
+    <div class="card">
+        <h3>📋 إدخال البيانات الطبية</h3>
+
+        <form action="/predict" method="post">
+
+            {% for col in columns %}
+                <label>{{ col }}</label>
+                <input type="number" step="any" name="{{ col }}" required>
+            {% endfor %}
+
+            <button type="submit">🔍 تحليل الحالة</button>
+
+        </form>
+    </div>
+
+    <!-- النتيجة -->
+    <div class="card result-box">
+
+        <h3>📊 النتيجة الطبية</h3>
+
+        {% if result %}
+            {% set value = result.replace('%','')|float %}
+
+            <div class="circle
+                {% if value < 30 %} low
+                {% elif value < 70 %} medium
+                {% else %} high
+                {% endif %}
+            ">
+                {{ result }}
+            </div>
+
+            {% if value < 30 %}
+                <p>✅ خطر منخفض — الحالة مستقرة</p>
+            {% elif value < 70 %}
+                <p>⚠️ خطر متوسط — ينصح بمتابعة طبية</p>
+            {% else %}
+                <p>🚨 خطر مرتفع — يجب مراجعة الطبيب</p>
+            {% endif %}
+
+        {% else %}
+            <p>أدخل البيانات لعرض النتيجة</p>
+        {% endif %}
+
+    </div>
+
+</div>
+
+<!-- التذييل المطلوب -->
+<div class="footer">
+    تحت إشراف الدكتور <strong>رائد عودة</strong>  
+    <br>
+    مشروع تعلم آلي لتوقع مرض السكري
+</div>
+
+</body>
+</html>
